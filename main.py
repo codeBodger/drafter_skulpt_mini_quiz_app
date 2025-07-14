@@ -1,30 +1,34 @@
 #!/bin/python
 
-from drafter import route, Page, Button, start_server, __version__, deploy_site, get_main_server, Table
+from drafter import route, Page, Button, start_server, __version__, deploy_site, get_main_server
 from dataclasses import dataclass
 
 from random import randint
 
 @dataclass
+class Term:
+        term: str
+        definition: str
+
+@dataclass
 class State:
-        counter: int
+        terms: list[Term]
 
 @route
 def index(state: State) -> Page:
-        return Page(state, [Table([
-                ["Welcome to Drafter!",
-                "Click the button below."],
-                [Button("Increase the count", increment_counter, (randint(1,100),))],
-        ])])
+        return Page(state, [
+                "What do you want to do?",
+                Button("Add Terms", add_terms),
+                Button("Study", study)
+        ])
 
 @route
-def increment_counter(state: State, offset: int) -> Page:
-        raise ValueError("aa")
-        state.counter += offset
-        return Page(state, [
-                "You've clicked the button " + str(state.counter) + " times",
-                Button("Click again", increment_counter, (randint(1,100),))
-        ])
+def add_terms(state: State) -> Page:
+        raise NotImplementedError()
+
+@route
+def study(state: State) -> Page:
+        raise NotImplementedError()
 
 print(__version__)
 
@@ -38,4 +42,4 @@ get_main_server().configuration.cdn_drafter_setup = "https://codebodger.github.i
 v = __version__.split(".")
 
 if int(v[0]) == 2 and int(v[1]) == 0:
-        start_server(State(0))
+        start_server(State(list[Term]()))
