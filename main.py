@@ -46,7 +46,23 @@ def add_term_entry_pannel(state: State) -> Page:
 
 @route
 def save_entered_terms(state: State, *args: Any, **kwargs: str) -> Page:
-        raise NotImplementedError()
+        print(args, kwargs)
+        state.terms.clear()
+        while len(kwargs):
+                val = kwargs.popitem()
+                key = val[0]
+                if key.startswith("term"):
+                        term = val[1]
+                        def_key = key.replace("term", "definition")
+                        definition = kwargs.pop(def_key)
+                elif key.startswith("definition"):
+                        definition = val[1]
+                        term_key = key.replace("definition", "term")
+                        term = kwargs.pop(term_key)
+                else: continue
+
+                state.terms.append(Term(term, definition))
+        return index(state)
 
 @route
 def study(state: State) -> Page:
