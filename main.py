@@ -1,6 +1,7 @@
 #!/bin/python
 
-from drafter import route, Page, Button, start_server, __version__, deploy_site, get_main_server
+from typing import Any
+from drafter import Div, TextBox, route, Page, Button, start_server, __version__, deploy_site, get_main_server
 from dataclasses import dataclass
 
 from random import randint
@@ -33,11 +34,15 @@ def add_terms(state: State) -> Page:
         ])
 
 def term_entry_box(term: Term, key: int) -> Div:
-        raise NotImplementedError()
+        return Div(
+                "Term:", TextBox(f"term{key}", term.term),
+                "Definition:", TextBox(f"definition{key}", term.definition)
+        )
 
 @route
 def add_term_entry_pannel(state: State) -> Page:
-        raise NotImplementedError()
+        state.terms.append(Term("", ""))
+        return add_terms(state)
 
 @route
 def save_entered_terms(state: State, *args: Any, **kwargs: str) -> Page:
