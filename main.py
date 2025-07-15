@@ -79,7 +79,18 @@ def study(state: State) -> Page:
 
 @route
 def check_answer(state: State, **kwargs: str) -> Page:
-        raise NotImplementedError()
+        term_name = kwargs.get("term", "")
+        term = None
+        for t in state.terms:
+                if t.term == term_name:
+                        term = t
+                        break
+        if not term: return study(state)
+
+        term_answer = kwargs.get("answer", "")
+        term.you_said = term_answer
+
+        return study(state)
 
 @route
 def generate_report(state: State) -> Page:
