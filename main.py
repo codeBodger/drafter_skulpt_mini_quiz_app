@@ -68,7 +68,9 @@ def save_entered_terms(state: State, *args: Any, **kwargs: str) -> Page:
 
 @route
 def study(state: State) -> Page:
-        unvisited_terms = [term for term in state.terms if not term.visited]
+        unvisited_terms: list[Term] = []
+        for term in state.terms:
+                if not term.visited: unvisited_terms.append(term)
         if not unvisited_terms:
                 return generate_report(state)
         rand_term = choice(unvisited_terms)
