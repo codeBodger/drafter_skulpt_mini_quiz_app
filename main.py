@@ -66,6 +66,23 @@ def save_entered_terms(state: State, *args: Any, **kwargs: str) -> Page:
 
 @route
 def study(state: State) -> Page:
+        unvisited_terms = [term for term in state.terms if not term.visited]
+        if not unvisited_terms:
+                return generate_report(state)
+        rand_term = choice(unvisited_terms)
+        rand_term.visited = True
+        return Page(state, [
+                f"Term: {rand_term.term}", LineBreak(),
+                "Definition:", TextBox("answer"),
+                Button("Submit", check_answer, kwargs={"term": rand_term.term})
+        ])
+
+@route
+def check_answer(state: State, **kwargs: str) -> Page:
+        raise NotImplementedError()
+
+@route
+def generate_report(state: State) -> Page:
         raise NotImplementedError()
 
 print(__version__)
