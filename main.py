@@ -10,6 +10,8 @@ from random import randint
 class Term:
         term: str
         definition: str
+        visited: bool = False
+        you_said: str = ""
 
 @dataclass
 class State:
