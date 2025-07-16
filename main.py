@@ -27,7 +27,10 @@ def index(state: State) -> Page:
 
 @route
 def add_terms(state: State) -> Page:
-        term_entry_boxes = [term_entry_box(term, i) for i, term in enumerate(state.terms)]
+        term_entry_boxes: list[Div] = []
+        for i, term in enumerate(state.terms):
+                term_entry_boxes.append(term_entry_box(term, i))
+
         return Page(state, [
                 "Enter terms below:",
                 *term_entry_boxes,
