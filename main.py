@@ -139,7 +139,10 @@ def term_result_box(term: Term) -> tuple[Div, bool]:
 
 @route
 def reset(state: State) -> Page:
-        raise NotImplementedError()
+        for term in state.terms:
+                term.visited = False
+                term.you_said = ""
+        return index(state)
 
 print(__version__)
 
