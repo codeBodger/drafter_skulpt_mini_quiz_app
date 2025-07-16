@@ -32,8 +32,8 @@ def add_terms(state: State) -> Page:
         return Page(state, [
                 "Enter terms below:",
                 *term_entry_boxes,
-                Button("+", add_term_entry_pannel),
-                Button("Save", save_entered_terms)
+                Button("+", save_entered_terms, ("add_term_entry_pannel", len(term_entry_boxes))),
+                Button("Main Menu", save_entered_terms, ("index", len(term_entry_boxes)))
         ])
 
 def term_entry_box(term: Term, key: int) -> Div:
@@ -48,22 +48,17 @@ def add_term_entry_pannel(state: State) -> Page:
         return add_terms(state)
 
 @route
-def save_entered_terms(state: State, **kwargs: str) -> Page:
+def save_entered_terms(state: State, procede_to: str, entry_len: int, **kwargs: str) -> Page:
         state.terms.clear()
-        while len(kwargs):
-                val = kwargs.popitem()
-                key = val[0]
-                if key.startswith("term"):
-                        term = val[1]
-                        def_key = key.replace("term", "definition")
-                        definition = kwargs.pop(def_key)
-                elif key.startswith("definition"):
-                        definition = val[1]
-                        term_key = key.replace("definition", "term")
-                        term = kwargs.pop(term_key)
-                else: continue
-
+        for i in range(entry_len):
+                term = kwargs.pop(f"term{i}")
+                definition = kwargs.pop(f"definition{i}")
                 state.terms.append(Term(term, definition))
+
+        if procede_to == "add_term_entry_pannel":
+                return add_term_entry_pannel(state)
+        elif procede_to == "index":
+                return index(state)
         return index(state)
 
 @route
