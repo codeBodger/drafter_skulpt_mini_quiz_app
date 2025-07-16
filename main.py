@@ -1,10 +1,10 @@
 #!/bin/python
 
 from typing import Any
-from drafter import Div, TextBox, route, Page, Button, start_server, __version__, deploy_site, get_main_server
+from drafter import Div, LineBreak, Text, TextBox, route, Page, Button, start_server, __version__, deploy_site, get_main_server
 from dataclasses import dataclass
 
-from random import randint
+from random import choice
 
 @dataclass
 class Term:
@@ -37,8 +37,8 @@ def add_terms(state: State) -> Page:
 
 def term_entry_box(term: Term, key: int) -> Div:
         return Div(
-                "Term:", TextBox(f"term{key}", term.term),
-                "Definition:", TextBox(f"definition{key}", term.definition)
+                "Term: ", TextBox(f"term{key}", term.term), "&nbsp;&nbsp;&nbsp; "
+                "Definition: ", TextBox(f"definition{key}", term.definition)
         )
 
 @route
@@ -76,8 +76,8 @@ def study(state: State) -> Page:
         rand_term = choice(unvisited_terms)
         rand_term.visited = True
         return Page(state, [
-                f"Term: {rand_term.term}", LineBreak(),
-                "Definition:", TextBox("answer"),
+                f"Term: {rand_term.term}",
+                Text("Definition:"), TextBox("answer"), LineBreak(),
                 Button("Submit", check_answer, kwargs={"term": rand_term.term})
         ])
 
@@ -116,7 +116,7 @@ def generate_report(state: State) -> Page:
         
         return Page(state, [
                 f"Result: {results / len(visited_terms) * 100 :.4}%",
-                *term_result_boxes,
+                *term_result_boxes, LineBreak(),
                 Button("Return home", index),
                 Button("⟳ Reset and Return home ⟳", reset)
         ])
@@ -125,14 +125,14 @@ def term_result_box(term: Term) -> tuple[Div, bool]:
         if term.definition == term.you_said:
                 return Div(
                         f"Term: {term.term}", LineBreak(),
-                        "You said: ", Text(term.you_said, style="color: green"),
-                        f"Correct: {term.definition}"
+                        "You said: ", Text(term.you_said, style="color: green"), LineBreak(),
+                        f"Correct: {term.definition}", LineBreak()
                 ), True
         else:
                 return Div(
                         f"Term: {term.term}", LineBreak(),
-                        "You said: ", Text(term.you_said, style="color: red"),
-                        f"Correct: {term.definition}"
+                        "You said: ", Text(term.you_said, style="color: red"), LineBreak(),
+                        f"Correct: {term.definition}", LineBreak()
                 ), False
 
 @route
