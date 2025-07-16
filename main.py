@@ -114,18 +114,14 @@ def generate_report(state: State) -> Page:
         ])
 
 def term_result_box(term: Term) -> tuple[Div, bool]:
-        if term.definition == term.you_said:
-                return Div(
-                        f"Term: {term.term}", LineBreak(),
-                        "You said: ", Text(term.you_said, style="color: green"), LineBreak(),
-                        f"Correct: {term.definition}", LineBreak(), LineBreak()
-                ), True
-        else:
-                return Div(
-                        f"Term: {term.term}", LineBreak(),
-                        "You said: ", Text(term.you_said, style="color: red"), LineBreak(),
-                        f"Correct: {term.definition}", LineBreak(), LineBreak()
-                ), False
+        result = term.definition == term.you_said
+        if result: color = "green"
+        else:      color = "red"
+        return Div(
+                f"Term: {term.term}", LineBreak(),
+                "You said: ", Text(term.you_said, style=f"color: {color}"), LineBreak(),
+                f"Correct: {term.definition}", LineBreak(), LineBreak()
+        ), result
 
 @route
 def reset(state: State) -> Page:
