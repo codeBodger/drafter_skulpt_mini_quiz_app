@@ -19,12 +19,12 @@ class State:
 def index(state: State) -> Page:
         return Page(state, [
                 "What do you want to do?",
-                Button("Add Terms", add_terms),
-                Button("Study", study)
+                Button("Add/Edit Terms", edit_terms),
+                Button("Study Terms", study)
         ])
 
 @route
-def add_terms(state: State) -> Page:
+def edit_terms(state: State) -> Page:
         term_entry_boxes: list[Div] = []
         for i, term in enumerate(state.terms):
                 term_entry_boxes.append(term_entry_box(term, i))
@@ -32,7 +32,7 @@ def add_terms(state: State) -> Page:
         return Page(state, [
                 "Enter terms below:",
                 *term_entry_boxes,
-                Button("+", save_entered_terms, ("add_term_entry_pannel", len(term_entry_boxes))),
+                Button("+", save_entered_terms, ("add_term_entry_box", len(term_entry_boxes))),
                 Button("Main Menu", save_entered_terms, ("index", len(term_entry_boxes)))
         ])
 
@@ -43,9 +43,9 @@ def term_entry_box(term: Term, key: int) -> Div:
         )
 
 @route
-def add_term_entry_pannel(state: State) -> Page:
+def add_term_entry_box(state: State) -> Page:
         state.terms.append(Term("", ""))
-        return add_terms(state)
+        return edit_terms(state)
 
 @route
 def save_entered_terms(state: State, procede_to: str, entry_len: int, **kwargs: str) -> Page:
@@ -55,8 +55,8 @@ def save_entered_terms(state: State, procede_to: str, entry_len: int, **kwargs: 
                 definition = kwargs.pop(f"definition{i}")
                 state.terms.append(Term(term, definition))
 
-        if procede_to == "add_term_entry_pannel":
-                return add_term_entry_pannel(state)
+        if procede_to == "add_term_entry_box":
+                return add_term_entry_box(state)
         elif procede_to == "index":
                 return index(state)
         return index(state)
@@ -72,11 +72,11 @@ def study(state: State) -> Page:
         return Page(state, [
                 f"Term: {rand_term.term}",
                 Text("Definition:"), TextBox("term_answer"), LineBreak(),
-                Button("Submit", check_answer, kwargs={"term_name": rand_term.term})
+                Button("Submit", store_answer, kwargs={"term_name": rand_term.term})
         ])
 
 @route
-def check_answer(state: State, term_name: str = "", term_answer: str = "") -> Page:
+def store_answer(state: State, term_name: str = "", term_answer: str = "") -> Page:
         term = None
         for t in state.terms:
                 if t.term == term_name:
@@ -108,9 +108,9 @@ def generate_report(state: State) -> Page:
         
         return Page(state, [
                 f"Result: {results / len(visited_terms) * 100 :.4}%",
-                *term_result_boxes, LineBreak(),
+                *term_result_boxes,
                 Button("Return home", index),
-                Button("⟳ Reset and Return home ⟳", reset)
+                Button("⟳ Reset Progress and Return home ⟳", reset)
         ])
 
 def term_result_box(term: Term) -> tuple[Div, bool]:
@@ -118,13 +118,13 @@ def term_result_box(term: Term) -> tuple[Div, bool]:
                 return Div(
                         f"Term: {term.term}", LineBreak(),
                         "You said: ", Text(term.you_said, style="color: green"), LineBreak(),
-                        f"Correct: {term.definition}", LineBreak()
+                        f"Correct: {term.definition}", LineBreak(), LineBreak()
                 ), True
         else:
                 return Div(
                         f"Term: {term.term}", LineBreak(),
                         "You said: ", Text(term.you_said, style="color: red"), LineBreak(),
-                        f"Correct: {term.definition}", LineBreak()
+                        f"Correct: {term.definition}", LineBreak(), LineBreak()
                 ), False
 
 @route
