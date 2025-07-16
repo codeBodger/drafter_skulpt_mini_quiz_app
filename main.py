@@ -20,7 +20,8 @@ def index(state: State) -> Page:
         return Page(state, [
                 "What do you want to do?",
                 Button("Add/Edit Terms", edit_terms),
-                Button("Study Terms", study)
+                Button("Study Terms", study),
+                Button("Last Run Results", generate_report)
         ])
 
 @route
@@ -72,20 +73,22 @@ def study(state: State) -> Page:
         return Page(state, [
                 f"Term: {rand_term.term}",
                 Text("Definition:"), TextBox("term_answer"), LineBreak(),
-                Button("Submit", store_answer, kwargs={"term_name": rand_term.term})
+                Button("Submit", store_answer, ("study",), kwargs={"term_name": rand_term.term}),
+                Button("See Results Now", store_answer, ("generate_report",), kwargs={"term_name": rand_term.term})
         ])
 
 @route
-def store_answer(state: State, term_name: str = "", term_answer: str = "") -> Page:
+def store_answer(state: State, procede_to: str, term_name: str = "", term_answer: str = "") -> Page:
         term = None
         for t in state.terms:
                 if t.term == term_name:
                         term = t
                         break
-        if not term: return study(state)
+        if term:
+                term.you_said = term_answer
 
-        term.you_said = term_answer
-
+        if procede_to == "generate_report":
+                return generate_report(state)
         return study(state)
 
 @route
