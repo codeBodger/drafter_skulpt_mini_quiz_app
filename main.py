@@ -19,7 +19,7 @@ class State:
 def index(state: State) -> Page:
         return Page(state, [
                 "What do you want to do?",
-                Button("Add/Edit Terms", edit_terms),
+                Button("Add/Edit Terms (Resets Progress)", edit_terms),
                 Button("Study Terms", study),
                 Button("Last Run Results", generate_report)
         ])
@@ -29,9 +29,12 @@ def edit_terms(state: State) -> Page:
         term_entry_boxes: list[Div] = []
         for i, term in enumerate(state.terms):
                 term_entry_boxes.append(term_entry_box(term, i))
+        if not term_entry_boxes:
+                term_entry_boxes.append(term_entry_box(Term("", ""), 0))
 
         return Page(state, [
                 "Enter terms below:",
+                "To delete a term, simply make the term or definition blank.",
                 *term_entry_boxes,
                 Button("+", save_entered_terms, ("add_term_entry_box", len(term_entry_boxes))),
                 Button("Main Menu", save_entered_terms, ("index", len(term_entry_boxes)))
@@ -54,6 +57,7 @@ def save_entered_terms(state: State, procede_to: str, entry_len: int, **kwargs: 
         for i in range(entry_len):
                 term = kwargs.pop(f"term{i}")
                 definition = kwargs.pop(f"definition{i}")
+                if not term or not definition: continue
                 state.terms.append(Term(term, definition))
 
         if procede_to == "add_term_entry_box":
