@@ -1,6 +1,5 @@
 #!/bin/python
 
-from typing import Any
 from drafter import Div, LineBreak, Text, TextBox, route, Page, Button, start_server, __version__, deploy_site, get_main_server
 from dataclasses import dataclass
 
@@ -49,7 +48,7 @@ def add_term_entry_pannel(state: State) -> Page:
         return add_terms(state)
 
 @route
-def save_entered_terms(state: State, *args: Any, **kwargs: str) -> Page:
+def save_entered_terms(state: State, **kwargs: str) -> Page:
         state.terms.clear()
         while len(kwargs):
                 val = kwargs.popitem()
@@ -82,7 +81,7 @@ def study(state: State) -> Page:
         ])
 
 @route
-def check_answer(state: State, *args: Any, **kwargs: str) -> Page:
+def check_answer(state: State, **kwargs: str) -> Page:
         term_name = kwargs.get("term", "")
         term = None
         for t in state.terms:
