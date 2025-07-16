@@ -76,13 +76,12 @@ def study(state: State) -> Page:
         rand_term = choice(unvisited_terms)
         return Page(state, [
                 f"Term: {rand_term.term}",
-                Text("Definition:"), TextBox("answer"), LineBreak(),
-                Button("Submit", check_answer, kwargs={"term": rand_term.term})
+                Text("Definition:"), TextBox("term_answer"), LineBreak(),
+                Button("Submit", check_answer, kwargs={"term_name": rand_term.term})
         ])
 
 @route
-def check_answer(state: State, **kwargs: str) -> Page:
-        term_name = kwargs.get("term", "")
+def check_answer(state: State, term_name: str = "", term_answer: str = "") -> Page:
         term = None
         for t in state.terms:
                 if t.term == term_name:
@@ -90,7 +89,6 @@ def check_answer(state: State, **kwargs: str) -> Page:
                         break
         if not term: return study(state)
 
-        term_answer = kwargs.get("answer", "")
         term.you_said = term_answer
 
         return study(state)
