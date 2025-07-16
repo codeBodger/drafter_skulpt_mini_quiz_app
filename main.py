@@ -10,7 +10,6 @@ from random import choice
 class Term:
         term: str
         definition: str
-        visited: bool = False
         you_said: str = ""
 
 @dataclass
@@ -72,11 +71,10 @@ def save_entered_terms(state: State, *args: Any, **kwargs: str) -> Page:
 def study(state: State) -> Page:
         unvisited_terms: list[Term] = []
         for term in state.terms:
-                if not term.visited: unvisited_terms.append(term)
+                if not term.you_said: unvisited_terms.append(term)
         if not unvisited_terms:
                 return generate_report(state)
         rand_term = choice(unvisited_terms)
-        rand_term.visited = True
         return Page(state, [
                 f"Term: {rand_term.term}",
                 Text("Definition:"), TextBox("answer"), LineBreak(),
@@ -102,7 +100,7 @@ def check_answer(state: State, *args: Any, **kwargs: str) -> Page:
 def generate_report(state: State) -> Page:
         visited_terms: list[Term] = []
         for term in state.terms:
-                if term.visited: visited_terms.append(term)
+                if term.you_said: visited_terms.append(term)
         if not visited_terms:
                 return Page(state, [
                         "You haven't studied any terms!",
@@ -140,7 +138,6 @@ def term_result_box(term: Term) -> tuple[Div, bool]:
 @route
 def reset(state: State) -> Page:
         for term in state.terms:
-                term.visited = False
                 term.you_said = ""
         return index(state)
 
