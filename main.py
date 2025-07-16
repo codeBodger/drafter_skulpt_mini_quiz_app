@@ -98,6 +98,34 @@ def check_answer(state: State, **kwargs: str) -> Page:
 
 @route
 def generate_report(state: State) -> Page:
+        visited_terms: list[Term] = []
+        for term in state.terms:
+                if term.visited: visited_terms.append(term)
+        if not visited_terms:
+                return Page(state, [
+                        "You haven't studied any terms!",
+                        Button("Return home", index)
+                ])
+
+        term_result_boxes: list[Div] = []
+        results = 0
+        for term in visited_terms:
+                result_box, result = term_result_box(term)
+                term_result_boxes.append(result_box)
+                results += result
+        
+        return Page(state, [
+                f"Result: {results / len(visited_terms) * 100 :.4}%",
+                *term_result_boxes,
+                Button("Return home", index),
+                Button("⟳ Reset and Return home ⟳", reset)
+        ])
+
+def term_result_box(term: Term) -> tuple[Div, bool]:
+        raise NotImplementedError()
+
+@route
+def reset(state: State) -> Page:
         raise NotImplementedError()
 
 print(__version__)
