@@ -48,7 +48,6 @@ def add_term_entry_pannel(state: State) -> Page:
 
 @route
 def save_entered_terms(state: State, *args: Any, **kwargs: str) -> Page:
-        print(args, kwargs)
         state.terms.clear()
         while len(kwargs):
                 val = kwargs.popitem()
@@ -82,7 +81,7 @@ def study(state: State) -> Page:
         ])
 
 @route
-def check_answer(state: State, **kwargs: str) -> Page:
+def check_answer(state: State, *args: Any, **kwargs: str) -> Page:
         term_name = kwargs.get("term", "")
         term = None
         for t in state.terms:
