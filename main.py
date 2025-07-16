@@ -122,7 +122,18 @@ def generate_report(state: State) -> Page:
         ])
 
 def term_result_box(term: Term) -> tuple[Div, bool]:
-        raise NotImplementedError()
+        if term.definition == term.you_said:
+                return Div(
+                        f"Term: {term.term}", LineBreak(),
+                        "You said: ", Text(term.you_said, style="color: green"),
+                        f"Correct: {term.definition}"
+                ), True
+        else:
+                return Div(
+                        f"Term: {term.term}", LineBreak(),
+                        "You said: ", Text(term.you_said, style="color: red"),
+                        f"Correct: {term.definition}"
+                ), False
 
 @route
 def reset(state: State) -> Page:
