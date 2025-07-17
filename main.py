@@ -26,7 +26,7 @@ def index(state: State) -> Page:
 
 @route
 def edit_terms(state: State) -> Page:
-        term_entry_boxes: list[Div] = []
+        term_entry_boxes = [] # type: list[Div] # type: ignore
         for i, term in enumerate(state.terms):
                 term_entry_boxes.append(term_entry_box(term, i))
         if not term_entry_boxes:
@@ -68,7 +68,7 @@ def save_entered_terms(state: State, procede_to: str, entry_len: int, **kwargs: 
 
 @route
 def study(state: State) -> Page:
-        unvisited_terms: list[Term] = []
+        unvisited_terms = [] # type: list[Term] # type: ignore
         for term in state.terms:
                 if not term.you_said: unvisited_terms.append(term)
         if not unvisited_terms:
@@ -97,7 +97,7 @@ def store_answer(state: State, procede_to: str, term_name: str = "", term_answer
 
 @route
 def generate_report(state: State) -> Page:
-        visited_terms: list[Term] = []
+        visited_terms = [] # type: list[Term] # type: ignore
         for term in state.terms:
                 if term.you_said: visited_terms.append(term)
         if not visited_terms:
@@ -106,7 +106,7 @@ def generate_report(state: State) -> Page:
                         Button("Return home", index)
                 ])
 
-        term_result_boxes: list[Div] = []
+        term_result_boxes = [] # type: list[Div] # type: ignore
         results = 0
         for term in visited_terms:
                 result_box, result = term_result_box(term)
