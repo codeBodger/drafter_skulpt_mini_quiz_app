@@ -112,7 +112,8 @@ def generate_report(state: State) -> Page:
                 result = term.definition == term.you_said
                 result_box = term_result_box(term, result)
                 term_result_boxes.append(result_box)
-                results += result
+                if result:
+                        results = results + 1
         
         return Page(state, [
                 "Result: " + str(results / len(visited_terms) * 100) + "%",
