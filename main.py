@@ -36,8 +36,8 @@ def edit_terms(state: State) -> Page:
                 "Enter terms below:",
                 "To delete a term, simply make the term or definition blank.",
                 *term_entry_boxes,
-                Button("+", save_entered_terms, ("add_term_entry_box", len(term_entry_boxes))),
-                Button("Main Menu", save_entered_terms, ("index", len(term_entry_boxes)))
+                Button("+", save_entered_terms, ["add_term_entry_box", len(term_entry_boxes)]),
+                Button("Main Menu", save_entered_terms, ["index", len(term_entry_boxes)])
         ])
 
 def term_entry_box(term: Term, key: int) -> Div:
@@ -77,8 +77,8 @@ def study(state: State) -> Page:
         return Page(state, [
                 "Term: " + rand_term.term,
                 Text("Definition:"), TextBox("term_answer"), LineBreak(),
-                Button("Submit", store_answer, ("study",), kwargs={"term_name": rand_term.term}),
-                Button("See Results Now", store_answer, ("generate_report",), kwargs={"term_name": rand_term.term})
+                Button("Submit", store_answer, ["study"], kwargs={"term_name": rand_term.term}),
+                Button("See Results Now", store_answer, ["generate_report"], kwargs={"term_name": rand_term.term})
         ])
 
 @route
@@ -109,7 +109,8 @@ def generate_report(state: State) -> Page:
         term_result_boxes = [] # type: list[Div] # type: ignore
         results = 0
         for term in visited_terms:
-                result_box, result = term_result_box(term)
+                result = term.definition == term.you_said
+                result_box = term_result_box(term, result)
                 term_result_boxes.append(result_box)
                 results += result
         
@@ -120,15 +121,14 @@ def generate_report(state: State) -> Page:
                 Button("⟳ Reset Progress and Return home ⟳", reset)
         ])
 
-def term_result_box(term: Term) -> tuple[Div, bool]:
-        result = term.definition == term.you_said
+def term_result_box(term: Term, result: bool) -> Div:
         if result: color = "color: green"
         else:      color = "color: red"
         return Div(
                 "Term: " + term.term, LineBreak(),
                 "You said: ", Text(term.you_said, style=color), LineBreak(),
                 "Correct: " + term.definition, LineBreak(), LineBreak()
-        ), result
+        )
 
 @route
 def reset(state: State) -> Page:
