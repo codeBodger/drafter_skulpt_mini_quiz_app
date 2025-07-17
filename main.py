@@ -57,8 +57,8 @@ def save_entered_terms(state: State, procede_to: str, entry_len: int, **kwargs: 
         for i in range(entry_len):
                 term = kwargs.pop("term" + str(i))
                 definition = kwargs.pop("definition" + str(i))
-                if not term or not definition: continue
-                state.terms.append(Term(term, definition))
+                if term and definition:
+                        state.terms.append(Term(term, definition))
 
         if procede_to == "add_term_entry_box":
                 return add_term_entry_box(state)
@@ -87,7 +87,6 @@ def store_answer(state: State, procede_to: str, term_name: str = "", term_answer
         for t in state.terms:
                 if t.term == term_name:
                         term = t
-                        break
         if term:
                 term.you_said = term_answer
 
