@@ -42,8 +42,8 @@ def edit_terms(state: State) -> Page:
 
 def term_entry_box(term: Term, key: int) -> Div:
         return Div(
-                "Term: ", TextBox(f"term{key}", term.term), "&nbsp;&nbsp;&nbsp; "
-                "Definition: ", TextBox(f"definition{key}", term.definition)
+                "Term: ", TextBox("term" + str(key), term.term), "&nbsp;&nbsp;&nbsp; "
+                "Definition: ", TextBox("definition" + str(key), term.definition)
         )
 
 @route
@@ -55,8 +55,8 @@ def add_term_entry_box(state: State) -> Page:
 def save_entered_terms(state: State, procede_to: str, entry_len: int, **kwargs: str) -> Page:
         state.terms.clear()
         for i in range(entry_len):
-                term = kwargs.pop(f"term{i}")
-                definition = kwargs.pop(f"definition{i}")
+                term = kwargs.pop("term" + str(i))
+                definition = kwargs.pop("definition" + str(i))
                 if not term or not definition: continue
                 state.terms.append(Term(term, definition))
 
@@ -75,7 +75,7 @@ def study(state: State) -> Page:
                 return generate_report(state)
         rand_term = choice(unvisited_terms)
         return Page(state, [
-                f"Term: {rand_term.term}",
+                "Term: " + rand_term.term,
                 Text("Definition:"), TextBox("term_answer"), LineBreak(),
                 Button("Submit", store_answer, ("study",), kwargs={"term_name": rand_term.term}),
                 Button("See Results Now", store_answer, ("generate_report",), kwargs={"term_name": rand_term.term})
@@ -114,7 +114,7 @@ def generate_report(state: State) -> Page:
                 results += result
         
         return Page(state, [
-                f"Result: {results / len(visited_terms) * 100 :.4}%",
+                "Result: " + str(results / len(visited_terms) * 100) + "%",
                 *term_result_boxes,
                 Button("Return home", index),
                 Button("⟳ Reset Progress and Return home ⟳", reset)
@@ -122,12 +122,12 @@ def generate_report(state: State) -> Page:
 
 def term_result_box(term: Term) -> tuple[Div, bool]:
         result = term.definition == term.you_said
-        if result: color = "green"
-        else:      color = "red"
+        if result: color = "color: green"
+        else:      color = "color: red"
         return Div(
-                f"Term: {term.term}", LineBreak(),
-                "You said: ", Text(term.you_said, style=f"color: {color}"), LineBreak(),
-                f"Correct: {term.definition}", LineBreak(), LineBreak()
+                "Term: " + term.term, LineBreak(),
+                "You said: ", Text(term.you_said, style=color), LineBreak(),
+                "Correct: " + term.definition, LineBreak(), LineBreak()
         ), result
 
 @route
