@@ -42,7 +42,7 @@ def edit_terms(state: State) -> Page:
 
 def term_entry_box(term: Term, key: int) -> Div:
         return Div(
-                "Term: ", TextBox("term" + str(key), term.term), "&nbsp;&nbsp;&nbsp; "
+                "Term: ", TextBox("term" + str(key), term.term), "    "
                 "Definition: ", TextBox("definition" + str(key), term.definition)
         )
 
