@@ -1,6 +1,6 @@
 #!/bin/python
 
-from drafter import Div, LineBreak, Text, TextBox, route, Page, Button, start_server, __version__, deploy_site, get_main_server
+from drafter import BulletedList, Div, LineBreak, Text, TextBox, route, Page, Button, start_server, __version__, deploy_site, get_main_server
 from dataclasses import dataclass
 
 from random import choice
@@ -35,7 +35,7 @@ def edit_terms(state: State) -> Page:
         return Page(state, [
                 "Enter terms below:",
                 "To delete a term, simply make the term or definition blank.",
-                *term_entry_boxes,
+                BulletedList(term_entry_boxes, style="list-style: none;"),
                 Button("+", save_entered_terms, ["add_term_entry_box", len(term_entry_boxes)]),
                 Button("Main Menu", save_entered_terms, ["index", len(term_entry_boxes)])
         ])
@@ -116,7 +116,7 @@ def generate_report(state: State) -> Page:
         
         return Page(state, [
                 "Result: " + str(results / len(visited_terms) * 100) + "%",
-                *term_result_boxes,
+                BulletedList(term_result_boxes, style="list-style: none;"),
                 Button("Return home", index),
                 Button("⟳ Reset Progress and Return home ⟳", reset)
         ])
