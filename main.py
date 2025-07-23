@@ -1,6 +1,12 @@
 #!/bin/python
 
-from drafter import BulletedList, Div, LineBreak, Text, TextBox, route, Page, Button, start_server, __version__, deploy_site, get_main_server
+from drafter import __version__
+from drafter.components import BulletedList, Button, Div, LineBreak, Text, TextBox
+from drafter.deploy import deploy_site
+from drafter.page import Page
+from drafter.routes import route
+from drafter.server import get_main_server, start_server
+
 from dataclasses import dataclass
 
 from random import choice
