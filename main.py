@@ -3,8 +3,8 @@
 from drafter import __version__
 from drafter.components import BulletedList, Button, Div, LineBreak, Text, TextBox
 from drafter.deploy import deploy_site
-from drafter.page import Page
-from drafter.routes import route
+from drafter.page import Page, Redirect
+from drafter.routes import redirect, route
 from drafter.server import get_main_server, start_server
 
 from dataclasses import dataclass
@@ -52,13 +52,13 @@ def term_entry_box(term: Term, key: int) -> Div:
                 "Definition: ", TextBox("definition" + str(key), term.definition)
         )
 
-@route
-def add_term_entry_box(state: State) -> Page:
+@redirect
+def add_term_entry_box(state: State) -> Redirect:
         state.terms.append(Term("", ""))
-        return edit_terms(state)
+        return Redirect(state, edit_terms)
 
-@route
-def save_entered_terms(state: State, procede_to: str, entry_len: int, **kwargs: str) -> Page:
+@redirect
+def save_entered_terms(state: State, procede_to: str, entry_len: int, **kwargs: str) -> Redirect:
         state.terms.clear()
         for i in range(entry_len):
                 term = kwargs.pop("term" + str(i))
@@ -67,10 +67,10 @@ def save_entered_terms(state: State, procede_to: str, entry_len: int, **kwargs: 
                         state.terms.append(Term(term, definition))
 
         if procede_to == "add_term_entry_box":
-                return add_term_entry_box(state)
+                return Redirect(state, add_term_entry_box)
         elif procede_to == "index":
-                return index(state)
-        return index(state)
+                return Redirect(state, index)
+        return Redirect(state, index)
 
 @route
 def study(state: State) -> Page:
@@ -78,7 +78,7 @@ def study(state: State) -> Page:
         for term in state.terms:
                 if not term.you_said: unvisited_terms.append(term)
         if not unvisited_terms:
-                return generate_report(state)
+                return Redirect(state, generate_report)
         rand_term = choice(unvisited_terms)
         return Page(state, [
                 "Term: " + rand_term.term,
@@ -87,8 +87,8 @@ def study(state: State) -> Page:
                 Button("See Results Now", store_answer, ["generate_report", rand_term.term])
         ])
 
-@route
-def store_answer(state: State, procede_to: str, term_name: str, term_answer: str = "") -> Page:
+@redirect
+def store_answer(state: State, procede_to: str, term_name: str, term_answer: str = "") -> Redirect:
         term = None
         for t in state.terms:
                 if t.term == term_name:
@@ -97,8 +97,8 @@ def store_answer(state: State, procede_to: str, term_name: str, term_answer: str
                 term.you_said = term_answer
 
         if procede_to == "generate_report":
-                return generate_report(state)
-        return study(state)
+                return Redirect(state, generate_report)
+        return Redirect(state, study)
 
 @route
 def generate_report(state: State) -> Page:
@@ -136,11 +136,11 @@ def term_result_box(term: Term, result: bool) -> Div:
                 "Correct: " + term.definition, LineBreak(), LineBreak()
         )
 
-@route
-def reset(state: State) -> Page:
+@redirect
+def reset(state: State) -> Redirect:
         for term in state.terms:
                 term.you_said = ""
-        return index(state)
+        return Redirect(state, index)
 
 print(__version__)
 
