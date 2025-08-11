@@ -6,6 +6,9 @@ from drafter.deploy import deploy_site
 from drafter.page import Page, Redirect
 from drafter.routes import route
 from drafter.server import get_main_server, start_server
+# from drafter.testing import assert_state_equal
+
+from bakery import assert_equal, assert_state_equal
 
 from dataclasses import dataclass
 
@@ -154,6 +157,28 @@ get_main_server().configuration.cdn_drafter_setup = "https://codebodger.github.i
 # get_main_server().configuration.cdn_skulpt_std = "http://localhost:8080/skulpt-stdlib.js"
 # get_main_server().configuration.cdn_skulpt_drafter = "http://localhost:8080/skulpt-drafter.js"
 # get_main_server().configuration.cdn_drafter_setup = "http://localhost:8080/drafter-setup.js"
+
+
+print("Tests for `index`")
+assert_state_equal(index(State([])), State([]))
+assert_state_equal(
+        index(State([Term("hello", "world"), Term("hallo", "welt")])),
+        State([Term("hello", "world"), Term("hallo", "welt")])
+)
+assert_state_equal(
+        index(State([Term("hello", "world", "wrld"), Term("hallo", "welt", you_said="wetl")])),
+        State([Term("hello", "world", "wrld"), Term("hallo", "welt", you_said="wetl")])
+)
+assert_equal(
+        index(State([])),
+        Page(State([]), [
+                "What do you want to do?",
+                Button("Add/Edit Terms (Resets Progress)", edit_terms),
+                Button("Study Terms", study),
+                Button("Last Run Results", generate_report)
+        ])
+)
+
 
 v = __version__.split(".")
 
