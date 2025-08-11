@@ -150,6 +150,10 @@ get_main_server().configuration.cdn_skulpt = "https://codebodger.github.io/draft
 get_main_server().configuration.cdn_skulpt_std = "https://codebodger.github.io/drafter/cdn/skulpt/skulpt-stdlib.js"
 get_main_server().configuration.cdn_skulpt_drafter = "https://codebodger.github.io/drafter/cdn/skulpt/skulpt-drafter.js"
 get_main_server().configuration.cdn_drafter_setup = "https://codebodger.github.io/drafter/cdn/skulpt/drafter-setup.js"
+# get_main_server().configuration.cdn_skulpt = "http://localhost:8080/skulpt.js"
+# get_main_server().configuration.cdn_skulpt_std = "http://localhost:8080/skulpt-stdlib.js"
+# get_main_server().configuration.cdn_skulpt_drafter = "http://localhost:8080/skulpt-drafter.js"
+# get_main_server().configuration.cdn_drafter_setup = "http://localhost:8080/drafter-setup.js"
 
 v = __version__.split(".")
 
